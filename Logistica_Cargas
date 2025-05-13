@@ -1,0 +1,135 @@
+import java.util.*;
+
+class Carga {
+    private static int contadorId = 1;
+    private int id;
+    private String descricao;
+    private String origem;
+    private String destino;
+    private boolean entregue;
+
+    public Carga(String descricao, String origem, String destino) {
+        this.id = contadorId++;
+        this.descricao = descricao;
+        this.origem = origem;
+        this.destino = destino;
+        this.entregue = false;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void marcarComoEntregue() {
+        this.entregue = true;
+    }
+
+    public boolean isEntregue() {
+        return entregue;
+    }
+
+    public String toString() {
+        return String.format("ID: %d | Descrição: %s | Origem: %s | Destino: %s | Entregue: %s",
+                id, descricao, origem, destino, entregue ? "Sim" : "Não");
+    }
+}
+
+public class SistemaLogistica {
+    private static List<Carga> cargas = new ArrayList<>();
+    private static Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        int opcao;
+
+        do {
+            System.out.println("\n==== Sistema de Logística de Cargas ====");
+            System.out.println("1. Cadastrar carga");
+            System.out.println("2. Listar cargas");
+            System.out.println("3. Buscar carga por ID");
+            System.out.println("4. Marcar carga como entregue");
+            System.out.println("0. Sair");
+            System.out.print("Escolha uma opção: ");
+            opcao = scanner.nextInt();
+            scanner.nextLine(); // Limpar o buffer
+
+            switch (opcao) {
+                case 1:
+                    cadastrarCarga();
+                    break;
+                case 2:
+                    listarCargas();
+                    break;
+                case 3:
+                    buscarCargaPorId();
+                    break;
+                case 4:
+                    marcarComoEntregue();
+                    break;
+                case 0:
+                    System.out.println("Encerrando o sistema.");
+                    break;
+                default:
+                    System.out.println("Opção inválida!");
+            }
+        } while (opcao != 0);
+    }
+
+    private static void cadastrarCarga() {
+        System.out.print("Descrição da carga: ");
+        String descricao = scanner.nextLine();
+
+        System.out.print("Origem: ");
+        String origem = scanner.nextLine();
+
+        System.out.print("Destino: ");
+        String destino = scanner.nextLine();
+
+        Carga novaCarga = new Carga(descricao, origem, destino);
+        cargas.add(novaCarga);
+        System.out.println("Carga cadastrada com sucesso! ID: " + novaCarga.getId());
+    }
+
+    private static void listarCargas() {
+        if (cargas.isEmpty()) {
+            System.out.println("Nenhuma carga cadastrada.");
+            return;
+        }
+
+        for (Carga carga : cargas) {
+            System.out.println(carga);
+        }
+    }
+
+    private static void buscarCargaPorId() {
+        System.out.print("Informe o ID da carga: ");
+        int id = scanner.nextInt();
+
+        for (Carga carga : cargas) {
+            if (carga.getId() == id) {
+                System.out.println(carga);
+                return;
+            }
+        }
+
+        System.out.println("Carga não encontrada.");
+    }
+
+    private static void marcarComoEntregue() {
+        System.out.print("Informe o ID da carga a ser marcada como entregue: ");
+        int id = scanner.nextInt();
+
+        for (Carga carga : cargas) {
+            if (carga.getId() == id) {
+                if (!carga.isEntregue()) {
+                    carga.marcarComoEntregue();
+                    System.out.println("Carga marcada como entregue.");
+                } else {
+                    System.out.println("Carga já está marcada como entregue.");
+                }
+                return;
+            }
+        }
+
+        System.out.println("Carga não encontrada.");
+    }
+}
